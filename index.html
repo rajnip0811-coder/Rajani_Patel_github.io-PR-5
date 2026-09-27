@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Department of Computer Science — XYZ University</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f4ff;
+    --panel:#ffffff;
+    --line:rgba(67,56,202,.12);
+    --ink:#1b1a2e;
+    --muted:#5c5a73;
+    --accent:#4338ca;
+    --accent-soft:#ede9fe;
+    --amber:#b8863b;
+    --tint-1:#ede9fe;
+    --tint-2:#e0edff;
+    --tint-3:#e6f7f1;
+    --tint-4:#fdeaf7;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:inherit;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:linear-gradient(160deg,#f6f4ff 0%,#eef3ff 40%,#e9fbf3 75%,#fef2fb 100%) fixed;color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;line-height:1.6;
+  }
+  h1,h2,h3,button.navlink,.brand{font-family:'Space Grotesk',system-ui,sans-serif;}
+  code,.data,.badge,th,.kicker{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--accent);}
+
+  /* ---- Top bar (mobile) ---- */
+  .topbar{
+    display:none;
+    position:sticky;top:0;z-index:60;
+    background:var(--panel);border-bottom:1px solid var(--line);
+    padding:env(safe-area-inset-top,0px) 16px 0;
+    align-items:center;justify-content:space-between;
+  }
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 0;}
+  .brand{font-weight:600;font-size:0.95rem;}
+  #menuBtn{
+    background:none;border:1px solid var(--line);border-radius:6px;
+    width:36px;height:36px;cursor:pointer;color:var(--ink);font-size:1.1rem;
+  }
+
+  .layout{display:flex;max-width:1180px;margin:0 auto;}
+
+  /* ---- Sidebar ---- */
+  aside{
+    width:230px;flex-shrink:0;
+    padding:28px 18px 40px;
+    position:sticky;top:0;height:100vh;overflow-y:auto;
+    border-right:1px solid var(--line);
+    background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
+  }
+  .brand-side{font-weight:700;font-size:1.05rem;margin-bottom:2px;}
+  .brand-side-sub{color:var(--muted);font-size:0.8rem;margin-bottom:24px;}
+  nav.side ul{list-style:none;margin:0;padding:0;}
+  nav.side li{margin-bottom:2px;}
+  nav.side button{
+    display:block;width:100%;text-align:left;
+    background:none;border:none;color:var(--muted);
+    padding:8px 10px;border-radius:6px;font-size:0.9rem;cursor:pointer;
+    border-left:2px solid transparent;
+  }
+  nav.side button:hover{background:var(--accent-soft);color:var(--ink);}
+  nav.side button.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:var(--accent-soft);}
+
+  main{flex:1;min-width:0;padding:40px 40px 60px;}
+
+  /* ---- Hero ---- */
+  .kicker{color:var(--accent);font-size:0.8rem;letter-spacing:0.02em;}
+  h1{font-size:clamp(1.8rem,3.4vw,2.5rem);margin:6px 0 10px;font-weight:700;letter-spacing:-0.01em;}
+  .subtitle{color:var(--muted);margin:0 0 18px;max-width:60ch;}
+
+  .stat-row{display:flex;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:22px 0 8px;}
+  .stat{flex:1;padding:16px 18px;border-right:1px solid var(--line);}
+  .stat:nth-child(1){background:var(--tint-1);}
+  .stat:nth-child(2){background:var(--tint-2);}
+  .stat:nth-child(3){background:var(--tint-3);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-size:1.5rem;font-weight:700;color:var(--accent);display:block;}
+  .stat .label{color:var(--muted);font-size:0.8rem;}
+
+  section{padding:38px 0;border-top:1px solid var(--line);}
+  section:first-of-type{border-top:none;padding-top:8px;}
+  h2{font-size:1.25rem;margin:0 0 16px;font-weight:600;}
+  p{color:#3f4552;}
+
+  /* Programs as definition rows, not cards */
+  .programs{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .programs li{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:13px 18px;border-bottom:1px solid var(--line);
+  }
+  .programs li:nth-child(1){background:var(--tint-1);}
+  .programs li:nth-child(2){background:var(--tint-2);}
+  .programs li:nth-child(3){background:var(--tint-3);}
+  .programs li:nth-child(4){background:var(--tint-4);}
+  .programs li:last-child{border-bottom:none;}
+  .programs .badge{color:var(--amber);font-size:0.78rem;}
+
+  /* Faculty */
+  .faculty-controls{margin-bottom:14px;}
+  .faculty-controls input{
+    width:100%;max-width:360px;
+    background:var(--panel);border:1px solid var(--line);
+    color:var(--ink);padding:9px 12px;border-radius:6px;
+    font-family:inherit;font-size:0.9rem;
+  }
+  .faculty-controls input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);font-size:0.88rem;}
+  th{color:var(--muted);font-weight:500;font-size:0.76rem;background:var(--panel);}
+  tbody tr:hover{background:var(--accent-soft);}
+  .no-results{color:var(--muted);padding:14px 0;display:none;}
+
+  /* Notices */
+  .notice{
+    display:flex;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line);
+    align-items:flex-start;cursor:pointer;
+  }
+  .notice:last-child{border-bottom:none;}
+  .notice .linecount{color:var(--amber);font-size:0.8rem;padding-top:2px;min-width:24px;}
+  .notice-body{flex:1;}
+  .notice-title{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .chev{color:var(--muted);transition:transform .15s ease;font-size:0.8rem;}
+  .notice.open .chev{transform:rotate(90deg);}
+  .notice-detail{max-height:0;overflow:hidden;color:var(--muted);font-size:0.85rem;transition:max-height .2s ease;}
+  .notice.open .notice-detail{max-height:100px;padding-top:6px;}
+
+  .contact-grid{display:flex;flex-wrap:wrap;gap:32px;}
+  .contact-grid .data{color:var(--accent);}
+
+  footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:0.82rem;}
+
+  @media (max-width: 860px){
+    .topbar{display:flex;}
+    aside{
+      position:fixed;top:0;left:0;height:100%;z-index:70;
+      background:var(--panel);transform:translateX(-100%);
+      transition:transform .2s ease;width:250px;
+      padding-top:calc(env(safe-area-inset-top,0px) + 20px);
+    }
+    aside.open{transform:translateX(0);box-shadow:2px 0 12px rgba(0,0,0,0.12);}
+    main{padding:24px 20px 50px;}
+    .layout{display:block;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">CS Dept · XYZ University</span>
+      <button id="menuBtn" aria-label="Open navigation">☰</button>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <aside id="sidebar">
+      <div class="brand-side">Computer Science</div>
+      <div class="brand-side-sub">XYZ University</div>
+      <nav class="side" id="navbar">
+        <ul>
+          <li><button data-target="#welcome" class="active">Welcome</button></li>
+          <li><button data-target="#about">About the department</button></li>
+          <li><button data-target="#programs">Programs</button></li>
+          <li><button data-target="#faculty">Faculty</button></li>
+          <li><button data-target="#notices">Notices</button></li>
+          <li><button data-target="#contact">Contact</button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+
+      <section id="welcome">
+        <span class="kicker">dept/cs</span>
+        <h1>Department of Computer Science</h1>
+        <p class="subtitle">We teach core computing fundamentals alongside applied
+        problem-solving, so students leave able to build, break, and reason about
+        software systems.</p>
+
+        <div class="stat-row">
+          <div class="stat"><span class="num">4</span><span class="label">programs</span></div>
+          <div class="stat"><span class="num">3</span><span class="label">faculty listed</span></div>
+          <div class="stat"><span class="num">15 Sep</span><span class="label">mid-terms begin</span></div>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2>About the department</h2>
+        <p>The Department of Computer Science provides quality education and develops
+        technical and problem-solving skills among students, preparing them for both
+        industry roles and further research.</p>
+      </section>
+
+      <section id="programs">
+        <h2>Programs offered</h2>
+        <ul class="programs">
+          <li>BCA <span class="badge">UG · 3 yr</span></li>
+          <li>MCA <span class="badge">PG · 2 yr</span></li>
+          <li>B.Tech Computer Science <span class="badge">UG · 4 yr</span></li>
+          <li>M.Tech Computer Science <span class="badge">PG · 2 yr</span></li>
+        </ul>
+      </section>
+
+      <section id="faculty">
+        <h2>Faculty members</h2>
+        <div class="faculty-controls">
+          <input type="text" id="facultySearch" placeholder="Search by name, designation, or specialization…" aria-label="Search faculty">
+        </div>
+        <table id="facultyTable">
+          <thead><tr><th>Name</th><th>Designation</th><th>Specialization</th></tr></thead>
+          <tbody>
+            <tr><td>Dr. Amit Sharma</td><td>Professor</td><td>Artificial Intelligence</td></tr>
+            <tr><td>Dr. Neha Verma</td><td>Associate Professor</td><td>Data Science</td></tr>
+            <tr><td>Mr. Rahul Singh</td><td>Assistant Professor</td><td>Computer Networks</td></tr>
+          </tbody>
+        </table>
+        <p class="no-results" id="noResults">No faculty match that search.</p>
+      </section>
+
+      <section id="notices">
+        <h2>Important notices</h2>
+        <div id="noticesList">
+          <div class="notice">
+            <span class="linecount">01</span>
+            <div class="notice-body">
+              <div class="notice-title"><span>Mid-term examinations begin 15 September</span><span class="chev">›</span></div>
+              <div class="notice-detail">Timetables will be posted on the department board one week in advance. Bring your ID card to every exam.</div>
+            </div>
+          </div>
+          <div class="notice">
+            <span class="linecount">02</span>
+            <div class="notice-body">
+              <div class="notice-title"><span>Assignment deadlines are firm</span><span class="chev">›</span></div>
+              <div class="notice-detail">Submissions after the deadline are not accepted except for documented medical leave, cleared with your course instructor.</div>
+            </div>
+          </div>
+          <div class="notice">
+            <span class="linecount">03</span>
+            <div class="notice-body">
+              <div class="notice-title"><span>Seminar registration is open</span><span class="chev">›</span></div>
+              <div class="notice-detail">Seats are limited to 60 students. Register at the department office before Friday.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <h2>Contact us</h2>
+        <div class="contact-grid">
+          <p>Department of Computer Science<br>XYZ University<br>Jaipur, Rajasthan</p>
+          <p>Email<br><span class="data">cs@xyzuniversity.edu</span></p>
+        </div>
+      </section>
+
+      <footer>© 2026 XYZ University</footer>
+
+    </main>
+  </div>
+
+<script>
+(function(){
+  var sidebar = document.getElementById('sidebar');
+  var menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', function(){
+    sidebar.classList.toggle('open');
+  });
+
+  var navButtons = document.querySelectorAll('#navbar button');
+  var sections = Array.prototype.map.call(navButtons, function(b){
+    return document.querySelector(b.getAttribute('data-target'));
+  });
+
+  navButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.querySelector(btn.getAttribute('data-target'));
+      if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+      sidebar.classList.remove('open');
+    });
+  });
+
+  function setActiveByScroll(){
+    var pos = window.scrollY + 90;
+    var currentIndex = 0;
+    sections.forEach(function(sec, idx){
+      if(sec && sec.offsetTop <= pos){ currentIndex = idx; }
+    });
+    navButtons.forEach(function(b, idx){
+      b.classList.toggle('active', idx === currentIndex);
+    });
+  }
+  window.addEventListener('scroll', setActiveByScroll, {passive:true});
+  setActiveByScroll();
+
+  var search = document.getElementById('facultySearch');
+  var rows = document.querySelectorAll('#facultyTable tbody tr');
+  var noResults = document.getElementById('noResults');
+  search.addEventListener('input', function(){
+    var q = search.value.trim().toLowerCase();
+    var visibleCount = 0;
+    rows.forEach(function(row){
+      var match = row.textContent.toLowerCase().indexOf(q) !== -1;
+      row.style.display = match ? '' : 'none';
+      if(match) visibleCount++;
+    });
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+  });
+
+  document.querySelectorAll('.notice').forEach(function(n){
+    n.addEventListener('click', function(){ n.classList.toggle('open'); });
+  });
+})();
+</script>
+
+</body>
+</html>
